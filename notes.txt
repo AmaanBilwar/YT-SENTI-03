@@ -1,0 +1,12 @@
+bes model to use 
+im not using these rn 
+need to use one of these: 
+
+NLTK: Powerful, versatile, good for multiple NLP tasks, but complex for sentiment analysis.
+TextBlob: Beginner-friendly, simple interface for sentiment analysis (polarity, subjectivity).
+Pattern: More comprehensive analysis (comparatives, superlatives, fact/opinion), steeper learning curve.
+Polyglot: Fast, multilingual support (136+ languages), ideal for multiple languages
+
+
+trial link
+https://www.youtube.com/watch?v=4dNgMVjkQvU

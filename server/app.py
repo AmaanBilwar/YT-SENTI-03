@@ -1,22 +1,29 @@
 from flask import Flask, request, jsonify
 import requests
 from youtube_transcript_api import YouTubeTranscriptApi
-import dotenv
 import os
-from flask_cors import CORS
+from dotenv import load_dotenv
+from transformers import pipeline
 
-dotenv.load_dotenv()
+from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
 
-# load openai api key from environment variables
+
+load_dotenv()
+
+model_id = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
+sentiment_analysis = pipeline('sentiment-analysis', model=model_id)
+
+
 openai_api_key = os.getenv('OPEN_AI_API_KEY')
+if not openai_api_key:
+    raise ValueError(
+        "OpenAI API key not found. Please set the OPEN_AI_API_KEY environment variable.")
 
-# endpoint for the openai api
+# openai endpoint
 openai_endpoint = 'https://api.openai.com/v1/chat/completions'
-
-# Function to interact with OpenAI API
 
 
 def openai_request(text):
@@ -25,9 +32,11 @@ def openai_request(text):
         'Content-Type': 'application/json'
     }
     payload = {
-        'model': 'gpt-3.5-turbo-16k',
-        'messages': [{'role': 'system', 'content':  "You are a helpful assistant that summarizes long pieces of text."}, {"role": "user", "content": f"Please summarize the following transcript: {text}"}
-                     ],
+        'model': 'gpt-3.5-turbo',
+        'messages': [
+            {"role": "system", "content": "You are a helpful assistant that summarizes long pieces of text."},
+            {"role": "user", "content": f"Please summarize the following transcript: {text}"}
+        ],
         'max_tokens': 300,
         'temperature': 0.7
     }
@@ -36,6 +45,8 @@ def openai_request(text):
         return response.json()['choices'][0]['message']['content'].strip()
     else:
         return f'Error: {response.text}'
+
+# Function to extract video ID from YouTube URL
 
 
 def extract_video_id(url):
@@ -52,41 +63,7 @@ def extract_video_id(url):
 
     return None
 
-
-@app.route('/transcription', methods=['GET'])
-def get_transcription():
-    url = request.args.get('url')
-    if not url:
-        return jsonify({'error': 'URL query parameter is required.'}), 400
-
-    video_id = extract_video_id(url)
-    if not video_id:
-        return jsonify({'error': 'Invalid YouTube link.'}), 400
-
-    try:
-        transcript = YouTubeTranscriptApi.get_transcript(video_id)
-        text_transcript = ' '.join([t['text'] for t in transcript])
-
-        return jsonify({'transcription': text_transcript})
-
-    except Exception as e:
-        return jsonify({'error': f'Error processing transcript: {str(e)}'}), 500
-
-
-@app.route('/summarize', methods=['POST'])
-def summarize_text():
-    data = request.get_json()
-    text_to_summarize = data.get('text')
-
-    if not text_to_summarize:
-        return jsonify({'error': 'Missing text field in request.'}), 400
-
-    try:
-        summary = openai_request(text_to_summarize)
-        return jsonify({'summary': summary})
-
-    except Exception as e:
-        return jsonify({'error': f'Error processing summary: {str(e)}'}), 500
+# Route for transcribing and summarizing
 
 
 @app.route('/transcribe-and-summarize', methods=['POST'])
@@ -109,14 +86,19 @@ def transcribe_and_summarize():
         # Step 2: Summarize the transcript
         summary = openai_request(text_transcript)
 
+        # sentiment analysis using transformer models
+        sentiment_results = sentiment_analysis(text_transcript)
+
         return jsonify({
             'transcription': text_transcript,
-            'summary': summary
+            'summary': summary,
+            'sentiment': sentiment_results[0]['label'],
+            'sentiment_score': sentiment_results[0]['score']
         })
 
     except Exception as e:
         # Log the detailed error message
-        print(f"Error processing transcript and summary: {str(e)}")
+        app.logger.error(f"Error processing transcript and summary: {str(e)}")
         return jsonify({'error': f'Error processing transcript and summary: {str(e)}'}), 500
 
 

@@ -1,14 +1,12 @@
-import { useState } from 'react'
-require('dotenv').config()
-
-
-import './App.css'
+import React, { useState } from 'react';
 
 function App() {
-  const [url, setUrl] = useState('');
+    const [url, setUrl] = useState('');
     const [transcription, setTranscription] = useState('');
     const [summary, setSummary] = useState('');
     const [error, setError] = useState('');
+    const [sentiment, setSentiment] = useState('');
+    const [sentimentScore, setSentimentScore] = useState('')
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -28,6 +26,8 @@ function App() {
             if (response.ok) {
                 setTranscription(data.transcription);
                 setSummary(data.summary);
+                setSentiment(data.sentiment);
+                setSentimentScore(data.sentiment_score);
             } else {
                 setError(data.error || 'An error occurred while processing your request.');
             }
@@ -35,10 +35,10 @@ function App() {
             setError('An error occurred while processing your request.');
         }
     };
-  
-  return (
-    <>
-      <h1>YouTube Transcription and Summarization</h1>
+
+    return (
+        <div className="container">
+            <h1>YouTube Transcription and Summarization</h1>
             <form onSubmit={handleSubmit}>
                 <label>
                     YouTube URL:
@@ -51,21 +51,29 @@ function App() {
                 </label>
                 <button type="submit">Submit</button>
             </form>
-            {error && <div style={{ color: 'red' }}>{error}</div>}
+            {error && <div className="error">{error}</div>}
             {transcription && (
-                <div>
+                <div className="result">
                     <h2>Transcription</h2>
                     <p>{transcription}</p>
                 </div>
             )}
             {summary && (
-                <div>
+                <div className="result">
                     <h2>Summary</h2>
                     <p>{summary}</p>
                 </div>
             )}
-    </>
-  )
+            {sentiment && (
+    <div className="result">
+        <h2>Sentiment Analysis</h2>
+        <p>Sentiment: {sentiment}</p>
+        <p>Sentiment Score: {sentimentScore}</p>
+    </div>
+)}
+
+        </div>
+    );
 }
 
-export default App
+export default App;
