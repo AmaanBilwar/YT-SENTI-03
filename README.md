@@ -36,7 +36,9 @@ cd into the project directory
 Now, Split the terminal using 
 
 You need two terminals to run the app, if youre using vs code you can:
+<br />
 ![Split terminal](https://github.com/AmaanBilwar/yt-senti-03/blob/main/images/split%20terminal.png)
+<br />
 
 then cd from one of the terminals into the "api" folder like and run the Flask app:
 
