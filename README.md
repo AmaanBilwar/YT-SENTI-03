@@ -65,5 +65,5 @@ Now navigate to the localhost displayed in the frontend terminal or click the bu
 ## 🔗 Links
 [![Portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://amaanbilwar.github.io/vite-deploy/)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/amaanbilwar/)
-## Steps to use the app locally
+
 
