@@ -3,27 +3,35 @@ import requests
 from youtube_transcript_api import YouTubeTranscriptApi
 import os
 from dotenv import load_dotenv
-from transformers import pipeline
-
 from flask_cors import CORS
-
 app = Flask(__name__)
+
 CORS(app)
-
-
 load_dotenv()
-
-model_id = 'cardiffnlp/twitter-roberta-base-sentiment-latest'
-sentiment_analysis = pipeline('sentiment-analysis', model=model_id)
-
 
 openai_api_key = os.getenv('OPEN_AI_API_KEY')
 if not openai_api_key:
     raise ValueError(
         "OpenAI API key not found. Please set the OPEN_AI_API_KEY environment variable.")
 
-# openai endpoint
 openai_endpoint = 'https://api.openai.com/v1/chat/completions'
+
+# Function to extract video ID from YouTube URL
+
+
+def extract_video_id(url):
+    from urllib.parse import urlparse, parse_qs
+
+    if 'youtube.com' in url or 'youtu.be' in url or 'youtube.googleapis.com' in url:
+        query = urlparse(url)
+        if query.hostname == 'youtu.be':
+            return query.path[1:]
+        if 'v' in query.query:
+            return query.query.split('v=')[1].split('&')[0]
+        return query.path.split('/')[-1]
+    return None
+
+# Function to request OpenAI for summarization
 
 
 def openai_request(text):
@@ -45,23 +53,6 @@ def openai_request(text):
         return response.json()['choices'][0]['message']['content'].strip()
     else:
         return f'Error: {response.text}'
-
-# Function to extract video ID from YouTube URL
-
-
-def extract_video_id(url):
-    from urllib.parse import urlparse, parse_qs
-
-    if 'youtube.com' in url:
-        query = urlparse(url)
-        if query.hostname == 'youtu.be':
-            return query.path[1:]
-        if 'v' in query.query:
-            return query.query.split('v=')[1].split('&')[0]
-    elif 'youtube.googleapis.com' in url:
-        return url.split('/')[-1]
-
-    return None
 
 # Route for transcribing and summarizing
 
@@ -86,14 +77,9 @@ def transcribe_and_summarize():
         # Step 2: Summarize the transcript
         summary = openai_request(text_transcript)
 
-        # sentiment analysis using transformer models
-        sentiment_results = sentiment_analysis(text_transcript)
-
         return jsonify({
             'transcription': text_transcript,
-            'summary': summary,
-            'sentiment': sentiment_results[0]['label'],
-            'sentiment_score': sentiment_results[0]['score']
+            'summary': summary
         })
 
     except Exception as e:
@@ -103,4 +89,4 @@ def transcribe_and_summarize():
 
 
 if __name__ == '__main__':
-    app.run(port=4000)
+    app.run(debug=True, port=4000)
