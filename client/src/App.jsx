@@ -1,11 +1,8 @@
-import { useState, useEffect } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useState } from 'react'
+
 import './App.css'
-import axios from 'axios'
 
 function App() {
-  
   const [url, setUrl] = useState('');
     const [transcription, setTranscription] = useState('');
     const [summary, setSummary] = useState('');
@@ -36,9 +33,7 @@ function App() {
             setError('An error occurred while processing your request.');
         }
     };
-
-
-
+  
   return (
     <>
       <h1>YouTube Transcription and Summarization</h1>
