@@ -38,7 +38,6 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-
       - name: Download artifact
         uses: actions/download-artifact@v2
         with:
