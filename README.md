@@ -36,7 +36,9 @@ cd into the project directory
 Now, Split the terminal using 
 
 You need two terminals to run the app, if youre using vs code you can:
-![Split terminal]()
+<br />
+![Split terminal](https://github.com/AmaanBilwar/yt-senti-03/blob/main/images/split%20terminal.png)
+<br />
 
 then cd from one of the terminals into the "api" folder like and run the Flask app:
 
@@ -65,5 +67,5 @@ Now navigate to the localhost displayed in the frontend terminal or click the bu
 ## 🔗 Links
 [![Portfolio](https://img.shields.io/badge/my_portfolio-000?style=for-the-badge&logo=ko-fi&logoColor=white)](https://amaanbilwar.github.io/vite-deploy/)
 [![linkedin](https://img.shields.io/badge/linkedin-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/amaanbilwar/)
-## Steps to use the app locally
+
 
