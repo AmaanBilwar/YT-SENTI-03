@@ -57,6 +57,12 @@ def openai_request(text):
 # Route for transcribing and summarizing
 
 
+@app.route('/debug', methods=['GET'])
+def debug():
+    api_key = os.getenv('OPEN_AI_API_KEY')
+    return jsonify({'openai_api_key': api_key})
+
+
 @app.route('/transcribe-and-summarize', methods=['POST'])
 def transcribe_and_summarize():
     data = request.get_json()
