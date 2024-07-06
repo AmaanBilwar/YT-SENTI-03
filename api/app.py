@@ -3,8 +3,10 @@ import requests
 from youtube_transcript_api import YouTubeTranscriptApi
 import os
 from dotenv import load_dotenv
+from textblob import TextBlob
 from flask_cors import CORS
 app = Flask(__name__)
+
 
 CORS(app)
 load_dotenv()
@@ -76,16 +78,24 @@ def transcribe_and_summarize():
         return jsonify({'error': 'Invalid YouTube link.'}), 400
 
     try:
-        # Step 1: Get the transcript
+        # Get the transcript
         transcript = YouTubeTranscriptApi.get_transcript(video_id)
         text_transcript = ' '.join([t['text'] for t in transcript])
 
-        # Step 2: Summarize the transcript
+        # Summarize the transcript
         summary = openai_request(text_transcript)
+
+        # sentiment analysis using TextBlob
+        blob = TextBlob(text_transcript)
+        sentiment = {
+            'polarity': blob.sentiment.polarity,
+            'subjectivity': blob.sentiment.subjectivity
+        }
 
         return jsonify({
             'transcription': text_transcript,
-            'summary': summary
+            'summary': summary,
+            'sentiment': sentiment,
         })
 
     except Exception as e:
