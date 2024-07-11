@@ -4,9 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "heroku-postbuild": "cd frontend && npm install && npm run build",
     "dev": "vite",
     "build": "vite build",
-    "start": "vite preview",
+    "start": "cd backend && python app.py",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
