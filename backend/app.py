@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from textblob import TextBlob
 from flask_cors import CORS
 app = Flask(__name__, static_folder='../frontend/dist', static_url_path='/')
-
+port = os.getenv('PORT')
 
 CORS(app)
 load_dotenv()
