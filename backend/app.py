@@ -5,8 +5,7 @@ import os
 from dotenv import load_dotenv
 from textblob import TextBlob
 from flask_cors import CORS
-app = Flask(__name__, static_folder='../frontend/dist', static_url_path='/')
-port = os.getenv('PORT')
+app = Flask(__name__)
 
 CORS(app)
 load_dotenv()
@@ -57,10 +56,6 @@ def openai_request(text):
         return f'Error: {response.text}'
 
 
-@app.route('/')
-def server():
-    return send_from_directory(app.static_folder, 'index.html')
-
 # Route for transcribing and summarizing
 
 
@@ -110,4 +105,4 @@ def transcribe_and_summarize():
 
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True, port=4000)

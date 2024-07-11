@@ -44,14 +44,20 @@ function App() {
 
     return (
         <div className='flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4'>
-            <Typography variant="h4">
+            <Typography variant="h4" className='pb-12'>
             YouTube Transcription and Summarization
             </Typography>
+            <div>
+                <p className='pb-12'>
+                    This app takes your Youtube video URL, transcribes the audio, and provides a summary and sentiment analysis of the transcription.
+                </p>
+                    
+            </div>
             <form onSubmit={handleSubmit}>
                 <label>
-                    <Typography>YouTube URL:</Typography>
-                    <div>
-                    <input
+                    <Typography className='flex justify-center'>YouTube URL:</Typography>
+                    <div className='flex justify-center p-4 w-screen'>
+                    <input className='p-4 w-1/2'
                         type="text"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
@@ -60,27 +66,12 @@ function App() {
                     />
             </div>
                 </label>
-                <button type="submit">
+                <div className='flex justify-center'>
+                    <button type="submit" className='rounded-md p-6 bg-blue-200 text-black hover:text-white hover:bg-blue-400'>
                     <Typography>Analyze</Typography></button>
+                </div>
             </form>
             {error && <Typography color="error">{error}</Typography>}
-            {transcription && (
-                <div 
-                    className='w-full max-w-2x; mt-6'>
-                    <Typography >
-                        Transcript
-                    </Typography>
-                    <Typography>{transcription}</Typography>
-                </div>
-            )}
-            {summary && (
-                <div className='w-full max-w-2xl mt-6'>
-                    <Typography variant="h6">
-                        Summary
-                    </Typography>
-                    <Typography>{summary}</Typography>
-                </div>
-            )}
             {sentiment && (
     <div className='w-full max-w-2xl mt-8 flex flex-col items-center'>
         <Typography  variant="h6">
@@ -122,6 +113,31 @@ function App() {
         
                     </div>
             )}
+            {summary && (
+                <div className='w-full max-w-2xl mt-6'>
+                    <Typography variant="h6">
+                        <div className='flex justify-center align-middle text-2xl font-bold pb-6'>
+                            Summary
+                        </div>
+                    </Typography>
+                    <Typography className='text-center bg-blue-400 text-white rounded-full p-12'>{summary}</Typography>
+                </div>
+            )}
+            {transcription && (
+                <div 
+                    className='w-full max-w-2x; mt-6'>
+                    <Typography>
+                        <div className='flex justify-center align-middle text-2xl font-bold pb-6'>
+                            Transcript
+
+                        </div>
+                    </Typography>
+                    <div className='flex justify-center align-middle'>
+                        <Typography className='text-center w-9/12 text-black box-border-4 rounded-md p-12 '>{transcription}</Typography>
+                    </div>
+                </div>
+            )}
+            
             </div>
         
     );
