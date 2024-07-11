@@ -1,11 +1,11 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 import requests
 from youtube_transcript_api import YouTubeTranscriptApi
 import os
 from dotenv import load_dotenv
 from textblob import TextBlob
 from flask_cors import CORS
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../frontend/dist', static_url_path='/')
 
 
 CORS(app)
@@ -56,6 +56,11 @@ def openai_request(text):
     else:
         return f'Error: {response.text}'
 
+
+@app.route('/')
+def server():
+    return send_from_directory(app.static_folder, 'index.html')
+
 # Route for transcribing and summarizing
 
 
@@ -105,4 +110,4 @@ def transcribe_and_summarize():
 
 
 if __name__ == '__main__':
-    app.run(debug=True, port=4000)
+    app.run()
