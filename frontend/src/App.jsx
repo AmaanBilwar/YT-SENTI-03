@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import {Line} from 'react-chartjs-2';
 import { Box, CircularProgress, Slider, Typography } from '@mui/material';
 import {Chart as ChartJS, CategoryScale, LinearScale, LineElement, PointElement, Title, Tooltip} from 'chart.js';
 
@@ -13,6 +12,28 @@ function App() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
 
+    const getDownload = async (e) => {
+        e.preventDefault();
+        setError('');
+        try{
+            const donwloadDatares = fetch('http://localhost:4000/download', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ transcription, summary })
+            });
+            const donwloadDatadata = await donwloadDatares.json();
+            if (donwloadDatares.ok) {
+                console.log(donwloadDatadata);
+            } else {
+                setError(donwloadDatadata.error || 'An error occurred while processing your request.');
+            }
+        } catch (error) {
+            setError('An error occurred while processing your request.');
+        }
+        
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -137,6 +158,16 @@ function App() {
                     </div>
                 </div>
             )}
+            <div className='flex justify-center'>
+                <p>
+                    Want to save the transcription and summary? Click the button below to download the text file or sign in to save it to your account.
+                    <br />
+                    <br />
+                    <button className='flex justify-center' onClick={getDownload}>
+                        Download
+                    </button>
+                </p>
+            </div>
             
             </div>
         
